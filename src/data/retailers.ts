@@ -160,17 +160,48 @@ export const retailers: Retailer[] = [
 ];
 
 /**
- * Shops Zachary has lined up but not yet stocked (his 2026-08-09 list, no
- * addresses supplied). Name only - they get "coming soon" cards under the
- * live list and deliberately stay off the map, since a pin needs coordinates.
- * Move an entry into `retailers` above once its address lands.
+ * Shops Zachary has lined up but has not stocked yet (his 2026-08-09 list, which
+ * gave names only). Addresses below were looked up and cross-checked against at
+ * least two public listings each; his spellings were "S rank", "Flat earth games
+ * b" and "Crazy nicks".
+ *
+ * Same shape as Retailer so the cards render identically to the live ones. They
+ * stay off the map on purpose: a pin reads as "buy here today", which is not
+ * true yet. Move an entry into `retailers` above the day it starts stocking.
  */
-export type UpcomingRetailer = { id: string; name: string; city?: string };
-
-export const upcomingRetailers: UpcomingRetailer[] = [
-  { id: 's-rank', name: 'S Rank' },
-  { id: 'flat-earth-games', name: 'Flat Earth Games' },
-  { id: 'chronicle', name: 'Chronicle' },
-  { id: 'odyssey', name: 'Odyssey' },
-  { id: 'crazy-nicks', name: "Crazy Nick's" },
+export const upcomingRetailers: Retailer[] = [
+  {
+    id: 's-rank-games',
+    name: 'S Rank Games',
+    address: '2448 S Vineyard Ave Ste 101',
+    city: 'Ontario',
+    state: 'CA',
+    postalCode: '91761',
+    lat: 34.0290190,
+    lng: -117.6127800,
+    url: 'https://s-rankgames.com',
+    phone: '(909) 773-1933',
+  },
+  {
+    id: 'flat-earth-games',
+    name: 'Flat Earth Games',
+    address: '12125 Day St Ste K407',
+    city: 'Moreno Valley',
+    state: 'CA',
+    postalCode: '92557',
+    lat: 33.9449750,
+    lng: -117.2812690,
+    phone: '(951) 992-8710',
+  },
+  {
+    id: 'krazy-nicks',
+    name: "Krazy Nick's Games",
+    address: '13327 Artesia Blvd',
+    city: 'Cerritos',
+    state: 'CA',
+    postalCode: '90703',
+    lat: 33.8743010,
+    lng: -118.0479930,
+    phone: '(562) 991-5487',
+  },
 ];

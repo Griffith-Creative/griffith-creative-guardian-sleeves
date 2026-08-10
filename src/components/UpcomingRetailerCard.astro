@@ -1,28 +1,26 @@
 ---
-import type { UpcomingRetailer } from '../data/retailers';
+import type { Retailer } from '../data/retailers';
 
 interface Props {
-  retailer: UpcomingRetailer;
-  /** Grid-span classes from the parent, used to close a short trailing row. */
-  className?: string;
+  retailer: Retailer;
 }
 
-const { retailer, className = '' } = Astro.props;
+const { retailer } = Astro.props;
 ---
 
-<!-- Placeholder slot, not a location: dashed border and no fill so it reads as
-     "not yet" against the solid RetailerCard. No address means no directions link. -->
+<!-- Same card as RetailerCard, with the "Coming soon" state sitting exactly where
+     "Get directions" sits on a live shop. No directions link on purpose: these
+     shops have not started stocking yet, so sending someone over would be wrong. -->
 <article
-  class:list={['p-5 flex flex-col justify-between gap-4 min-h-[112px]', className]}
-  style="border-radius: var(--rounded-sm); border: 1px dashed var(--hairline-soft);"
+  class="bg-canvas p-5"
+  style={`border-radius: var(--rounded-sm); border: 1px solid var(--hairline-soft);`}
 >
-  <div>
-    <h3 class="text-[16px] font-medium leading-[1.5] text-ink">{retailer.name}</h3>
-    {retailer.city && (
-      <p class="text-[14px] font-normal leading-[1.5] text-ash mt-1">{retailer.city}, CA</p>
-    )}
-  </div>
-  <span class="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.16em] text-mute uppercase">
+  <h3 class="text-[16px] font-medium leading-[1.5] text-ink">{retailer.name}</h3>
+  <address class="not-italic text-[14px] font-normal leading-[1.5] text-ash mt-1">
+    {retailer.address}<br />
+    {retailer.city}, {retailer.state} {retailer.postalCode}
+  </address>
+  <span class="inline-flex items-center gap-2 mt-3 text-[14px] font-medium leading-[1.5] text-mute">
     <span class="w-1.5 h-1.5 rounded-full bg-stone" aria-hidden="true"></span>
     Coming soon
   </span>
