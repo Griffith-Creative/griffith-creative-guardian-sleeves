@@ -163,7 +163,10 @@ export const retailers: Retailer[] = [
  * Shops Zachary has lined up but has not stocked yet (his 2026-08-09 list, which
  * gave names only). Addresses below were looked up and cross-checked against at
  * least two public listings each; his spellings were "S rank", "Flat earth games
- * b" and "Crazy nicks".
+ * b", "Oddasy" and "Crazy nicks". Odyssey Games sits well outside the Riverside
+ * and Orange County cluster, so it was held back until Jacob confirmed it.
+ *
+ * Still missing: the shop he wrote as "Chronical", which matches nothing findable.
  *
  * Same shape as Retailer so the cards render identically to the live ones. They
  * stay off the map on purpose: a pin reads as "buy here today", which is not
@@ -192,6 +195,17 @@ export const upcomingRetailers: Retailer[] = [
     lat: 33.9449750,
     lng: -117.2812690,
     phone: '(951) 992-8710',
+  },
+  {
+    id: 'odyssey-games',
+    name: 'Odyssey Games',
+    address: '1795 E Colorado Blvd',
+    city: 'Pasadena',
+    state: 'CA',
+    postalCode: '91106',
+    lat: 34.1462460,
+    lng: -118.1133260,
+    phone: '(626) 817-9522',
   },
   {
     id: 'krazy-nicks',
