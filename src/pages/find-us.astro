@@ -5,7 +5,7 @@ import PrimaryNav from '../components/PrimaryNav.astro';
 import RetailerMap from '../components/RetailerMap.astro';
 import RetailerList from '../components/RetailerList.astro';
 import Footer from '../components/Footer.astro';
-import { retailers } from '../data/retailers';
+import { retailers, upcomingRetailers } from '../data/retailers';
 ---
 
 <Layout title="Find Us | Guardian Sleeves" description="Find card shops carrying Guardian Sleeves near you. Retailer locations in the Los Angeles area.">
@@ -31,7 +31,7 @@ import { retailers } from '../data/retailers';
 
   <!-- Retailer List (works without JS as primary content) -->
   <!-- TODO: Add search/filter UI when retailer count warrants it -->
-  <RetailerList retailers={retailers} />
+  <RetailerList retailers={retailers} upcoming={upcomingRetailers} />
 
   <Footer slot="footer" />
 </Layout>

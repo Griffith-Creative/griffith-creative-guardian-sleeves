@@ -1,34 +1,62 @@
 ---
 interface Props {
   specs: { label: string; value: string }[];
+  /**
+   * 'band'  - full-bleed strip across a page section, one column per spec on desktop.
+   * 'panel' - inside a narrow column (the PDP buy rail), always 2-up. A long value
+   *           like POLYPROPYLENE overflows a fifth of a 640px column, so the panel
+   *           never expands past two.
+   */
+  variant?: 'band' | 'panel';
 }
 
-const { specs } = Astro.props;
+const { specs, variant = 'band' } = Astro.props;
+const isPanel = variant === 'panel';
 
 // Minimal line icons, drawn on one 24 grid at one stroke weight and matched
-// optical size. Concept-true: a single card, a folded material sheet, a matte
-// swatch, a stack of sleeves. Keyed by label so the caller API stays {label,value}.
+// optical size. Concept-true: a single card, the retail box, a folded material
+// sheet, a matte swatch, a stack of sleeves. Keyed by label so the caller API
+// stays {label,value}; size/pack kept as aliases for cut/count.
 const icons: Record<string, string> = {
+  cut: `<rect x="7.5" y="4" width="9" height="16" rx="1.5"/>`,
   size: `<rect x="7.5" y="4" width="9" height="16" rx="1.5"/>`,
+  box: `<path d="M4 8.4 12 4.7l8 3.7v7.2L12 19.3l-8-3.7z"/><path d="M4 8.4 12 12.1l8-3.7"/><path d="M12 12.1v7.2"/>`,
   material: `<path d="M7 4h6l4 4v12H7z"/><path d="M13 4v4h4"/>`,
   finish: `<rect x="5" y="5" width="14" height="14" rx="2.5"/><path d="M6 13 13 6"/><path d="M10.5 18 18 10.5"/>`,
+  count: `<path d="M12 3.4l8 3.7-8 3.7-8-3.7z"/><path d="M4 12l8 3.7 8-3.7"/><path d="M4 16.1l8 3.7 8-3.7"/>`,
   pack: `<path d="M12 3.4l8 3.7-8 3.7-8-3.7z"/><path d="M4 12l8 3.7 8-3.7"/><path d="M4 16.1l8 3.7 8-3.7"/>`,
 };
 const iconFor = (label: string) => icons[label.trim().toLowerCase()] ?? '';
+
+// Literal strings so Tailwind's scanner sees them; the block is always 3-5 wide.
+const columns: Record<number, string> = {
+  3: 'md:grid-cols-3',
+  4: 'md:grid-cols-4',
+  5: 'md:grid-cols-5',
+};
+const columnClass = isPanel ? '' : (columns[specs.length] ?? 'md:grid-cols-4');
+// An odd count leaves a hole in the 2-up grid - let the last cell fill it.
+const oddCount = specs.length % 2 === 1;
 ---
 
-<div class="grid grid-cols-2 md:grid-cols-4 border-y border-hairline">
+<div class:list={['grid grid-cols-2 border-y border-hairline', columnClass]}>
   {specs.map((spec, i) => (
     <div class:list={[
-      'relative flex flex-col items-center text-center gap-3.5 pt-9 pb-8 px-4',
+      // min-w-0: POLYPROPYLENE is one unbreakable word, so without this its
+      // min-content width pushes the 2-up grid wider than a phone viewport.
+      'relative flex flex-col items-center text-center min-w-0 px-3 sm:px-4',
+      isPanel ? 'gap-3 pt-7 pb-6' : 'gap-3.5 pt-9 pb-8',
+      oddCount && i === specs.length - 1 && (isPanel ? 'col-span-2' : 'col-span-2 md:col-span-1'),
       // inset vertical divider (56% height, centered) — reads as a band, not boxes
       i > 0 && "before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[56%] before:w-px before:bg-hairline",
-      i > 0 && i % 2 === 0 && 'before:hidden md:before:block',
-      // inset horizontal divider between the two mobile rows only
-      i >= 2 && "after:content-[''] after:absolute after:top-0 after:left-1/2 after:-translate-x-1/2 after:w-[56%] after:h-px after:bg-hairline md:after:hidden",
+      // a cell that starts a 2-up row has nothing to its left
+      i > 0 && i % 2 === 0 && (isPanel ? 'before:hidden' : 'before:hidden md:before:block'),
+      // inset horizontal divider between stacked rows
+      i >= 2 && "after:content-[''] after:absolute after:top-0 after:left-1/2 after:-translate-x-1/2 after:w-[56%] after:h-px after:bg-hairline",
+      i >= 2 && !isPanel && 'md:after:hidden',
     ]}>
       <svg
-        class="w-[26px] h-[26px] text-stone"
+        class:list={['text-stone', isPanel ? 'w-[22px] h-[22px]' : 'w-[26px] h-[26px]']}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -40,7 +68,7 @@ const iconFor = (label: string) => icons[label.trim().toLowerCase()] ?? '';
       />
       <div class="flex flex-col gap-1">
         <span class="text-[11px] font-medium tracking-[0.16em] text-mute uppercase">{spec.label}</span>
-        <span class="font-display text-[26px] md:text-[30px] leading-[0.9] uppercase text-ink text-balance">{spec.value}</span>
+        <span class:list={['font-display leading-[0.9] uppercase text-ink text-balance', isPanel ? 'text-[21px] md:text-[24px]' : 'text-[21px] sm:text-[26px] md:text-[30px]']}>{spec.value}</span>
       </div>
     </div>
   ))}

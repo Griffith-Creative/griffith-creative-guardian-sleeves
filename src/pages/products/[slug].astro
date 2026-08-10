@@ -6,6 +6,7 @@ import SpecBlock from '../../components/SpecBlock.astro';
 import Footer from '../../components/Footer.astro';
 import { Image } from 'astro:assets';
 import { COLORWAYS, photosFor, PRODUCT_HANDLE } from '../../data/products';
+import { productSpecs, specSentence } from '../../data/specs';
 
 export function getStaticPaths() {
   return COLORWAYS.map((colorway) => ({
@@ -24,7 +25,7 @@ const jsonLd: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   name: `Guardian Sleeves ${colorway.colorName}`,
-  description: `Tournament-grade card sleeves. 66×91.5mm. Archival polypropylene. Matte finish. 120 per pack.`,
+  description: `Tournament-grade card sleeves. ${specSentence}`,
   brand: { '@type': 'Brand', name: 'Guardian Sleeves' },
 };
 if (colorway.live) {
@@ -38,8 +39,8 @@ if (colorway.live) {
 }
 
 const metaDescription = colorway.live
-  ? `Guardian Sleeves ${colorway.colorName}. 66×91.5mm. Archival polypropylene. Matte finish. 120 per pack. $${colorway.price}.`
-  : `Guardian Sleeves ${colorway.colorName}. 66×91.5mm. Archival polypropylene. Matte finish. 120 per pack. Coming soon.`;
+  ? `Guardian Sleeves ${colorway.colorName}. ${specSentence} $${colorway.price}.`
+  : `Guardian Sleeves ${colorway.colorName}. ${specSentence} Coming soon.`;
 ---
 
 <Layout title={`${colorway.name} | Guardian Sleeves`} description={metaDescription}>
@@ -132,12 +133,7 @@ const metaDescription = colorway.live
           </div>
 
           <div class="mt-8">
-            <SpecBlock specs={[
-              { label: 'Size', value: '66×91.5mm' },
-              { label: 'Material', value: 'Archival PP' },
-              { label: 'Finish', value: 'Matte' },
-              { label: 'Pack', value: '120 Sleeves' },
-            ]} />
+            <SpecBlock specs={productSpecs} variant="panel" />
           </div>
 
           <!-- Quantity -->

@@ -45,6 +45,16 @@ export const retailers: Retailer[] = [
     phone: '(951) 698-7399',
   },
   {
+    id: 'elite-games-fallbrook',
+    name: 'Elite Games',
+    address: '131 W Beech St',
+    city: 'Fallbrook',
+    state: 'CA',
+    postalCode: '92028',
+    lat: 33.3785690,
+    lng: -117.2522440,
+  },
+  {
     id: 'sanctum',
     name: 'Sanctum Comics Games & Cards',
     address: '26489 Ynez Rd Suite A',
@@ -147,4 +157,20 @@ export const retailers: Retailer[] = [
     url: 'https://tier1games.com',
     phone: '(951) 694-8437',
   },
+];
+
+/**
+ * Shops Zachary has lined up but not yet stocked (his 2026-08-09 list, no
+ * addresses supplied). Name only - they get "coming soon" cards under the
+ * live list and deliberately stay off the map, since a pin needs coordinates.
+ * Move an entry into `retailers` above once its address lands.
+ */
+export type UpcomingRetailer = { id: string; name: string; city?: string };
+
+export const upcomingRetailers: UpcomingRetailer[] = [
+  { id: 's-rank', name: 'S Rank' },
+  { id: 'flat-earth-games', name: 'Flat Earth Games' },
+  { id: 'chronicle', name: 'Chronicle' },
+  { id: 'odyssey', name: 'Odyssey' },
+  { id: 'crazy-nicks', name: "Crazy Nick's" },
 ];

@@ -1,12 +1,23 @@
 ---
-import type { Retailer } from '../data/retailers';
+import type { Retailer, UpcomingRetailer } from '../data/retailers';
 import RetailerCard from './RetailerCard.astro';
+import UpcomingRetailerCard from './UpcomingRetailerCard.astro';
 
 interface Props {
   retailers: Retailer[];
+  upcoming?: UpcomingRetailer[];
 }
 
-const { retailers } = Astro.props;
+const { retailers, upcoming = [] } = Astro.props;
+
+// The upcoming grid is 2 / 3 / 5 wide. A trailing card that would otherwise
+// leave a one-cell hole stretches to close its row (at 5 shops: 2+2+1 → the last
+// spans both; 3+2 → the last spans the leftover pair; 5 → a clean single row).
+const lastSpan = [
+  upcoming.length % 2 === 1 && 'col-span-2',
+  upcoming.length % 3 === 2 ? 'md:col-span-2' : 'md:col-span-1',
+  'lg:col-span-1',
+].filter(Boolean).join(' ');
 ---
 
 <section class="py-[var(--space-section)] bg-soft-cloud">
@@ -19,5 +30,24 @@ const { retailers } = Astro.props;
         <RetailerCard retailer={retailer} />
       ))}
     </div>
+
+    {upcoming.length > 0 && (
+      <div class="mt-[var(--space-section)]">
+        <h3 class="font-display text-[26px] md:text-[36px] leading-[0.9] uppercase text-ink">
+          Coming soon
+        </h3>
+        <p class="text-[15px] leading-[1.5] text-mute mt-2 mb-6">
+          Shops adding Guardian to their shelves next.
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {upcoming.map((retailer, i) => (
+            <UpcomingRetailerCard
+              retailer={retailer}
+              className={i === upcoming.length - 1 ? lastSpan : ''}
+            />
+          ))}
+        </div>
+      </div>
+    )}
   </div>
 </section>

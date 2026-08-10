@@ -1,0 +1,29 @@
+---
+import type { UpcomingRetailer } from '../data/retailers';
+
+interface Props {
+  retailer: UpcomingRetailer;
+  /** Grid-span classes from the parent, used to close a short trailing row. */
+  className?: string;
+}
+
+const { retailer, className = '' } = Astro.props;
+---
+
+<!-- Placeholder slot, not a location: dashed border and no fill so it reads as
+     "not yet" against the solid RetailerCard. No address means no directions link. -->
+<article
+  class:list={['p-5 flex flex-col justify-between gap-4 min-h-[112px]', className]}
+  style="border-radius: var(--rounded-sm); border: 1px dashed var(--hairline-soft);"
+>
+  <div>
+    <h3 class="text-[16px] font-medium leading-[1.5] text-ink">{retailer.name}</h3>
+    {retailer.city && (
+      <p class="text-[14px] font-normal leading-[1.5] text-ash mt-1">{retailer.city}, CA</p>
+    )}
+  </div>
+  <span class="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.16em] text-mute uppercase">
+    <span class="w-1.5 h-1.5 rounded-full bg-stone" aria-hidden="true"></span>
+    Coming soon
+  </span>
+</article>
