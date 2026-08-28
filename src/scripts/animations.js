@@ -7,11 +7,13 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ─── 1. Fade-up on scroll ───
-  function initFadeUp() {
+  function initFadeUp(afterSwap) {
     const elements = document.querySelectorAll('[data-animate="fade-up"]');
     if (!elements.length) return;
 
-    if (prefersReducedMotion) {
+    // After a client-side page swap the new page is already painted, so
+    // hiding it again just produces a second flash. Show it and move on.
+    if (prefersReducedMotion || afterSwap) {
       elements.forEach((el) => {
         el.style.opacity = '1';
         el.style.transform = 'none';
@@ -191,8 +193,8 @@
   }
 
   // ─── Init ───
-  function init() {
-    initFadeUp();
+  function init(afterSwap = false) {
+    initFadeUp(afterSwap === true);
     initCountUp();
     initLetterReveal();
     initCursorVignette();
@@ -206,5 +208,5 @@
   }
 
   // Re-run after Astro page transitions
-  document.addEventListener('astro:after-swap', init);
+  document.addEventListener('astro:after-swap', () => init(true));
 })();
