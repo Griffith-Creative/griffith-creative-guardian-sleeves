@@ -17,7 +17,6 @@ export function getStaticPaths() {
 
 const { colorway } = Astro.props;
 const photos = photosFor(colorway.slug);
-const shotNames = ['front', '3/4 angle', 'open box with sleeve', 'back'];
 
 const fallbackPrice = colorway.live ? `$${colorway.price}` : 'Coming Soon';
 
@@ -56,8 +55,8 @@ const metaDescription = colorway.live
           <div id="pdp-gallery" class="aspect-square overflow-hidden">
             {photos.map((photo, i) => (
               <Image
-                src={photo}
-                alt={`${colorway.name}, ${shotNames[i] ?? 'product'} view`}
+                src={photo.image}
+                alt={`${colorway.name}, ${photo.label} view`}
                 widths={[640, 960, 1280]}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 format="avif"
@@ -75,13 +74,13 @@ const metaDescription = colorway.live
                 <button
                   type="button"
                   data-gallery-thumb={i}
-                  aria-label={`View ${shotNames[i] ?? 'product'} photo`}
+                  aria-label={`View ${photo.label} photo`}
                   aria-pressed={i === 0}
                   class="aspect-square overflow-hidden border transition-colors data-[active]:border-ink border-transparent hover:border-hairline"
                   data-active={i === 0 ? '' : undefined}
                 >
                   <Image
-                    src={photo}
+                    src={photo.image}
                     alt=""
                     widths={[160, 240]}
                     sizes="120px"

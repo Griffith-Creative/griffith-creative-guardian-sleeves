@@ -38,21 +38,41 @@ export const COLORWAYS: Colorway[] = [
 
 // Product photos live at src/assets/images/products/<slug>/NN-<shot>.jpg and
 // are globbed so adding a photo never requires touching code. Sorted by the
-// numeric prefix: 01-front, 02-angle, 03-open.
+// numeric prefix, and the <shot> half of the filename is what names the view
+// in alt text, so the gallery stays correct when the order differs by color
+// (Black has no box front, Mint is still on the older set).
 const photoModules = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/images/products/*/*.{jpg,jpeg,png}',
   { eager: true }
 );
 
-export function photosFor(slug: string): ImageMetadata[] {
+const SHOT_LABELS: Record<string, string> = {
+  box: 'box front',
+  sleeve: 'sleeve and sleeved card',
+  front: 'front',
+  angle: '3/4 angle',
+  open: 'open box with sleeve',
+  back: 'back',
+};
+
+export interface ProductPhoto {
+  image: ImageMetadata;
+  label: string;
+}
+
+export function photosFor(slug: string): ProductPhoto[] {
   return Object.keys(photoModules)
     .filter((path) => path.includes(`/products/${slug}/`))
     .sort()
-    .map((path) => photoModules[path].default);
+    .map((path) => {
+      const shot = path.split('/').pop()!.replace(/^\d+-/, '').replace(/\.\w+$/, '');
+      return { image: photoModules[path].default, label: SHOT_LABELS[shot] ?? 'product' };
+    });
 }
 
-// Catalog card images: AI-cutout composites on a uniform studio backdrop
-// (normalized box scale), separate from the authentic PDP gallery photos.
+// Catalog card images: one square box front per colorway, cropped so the box
+// occupies the same fraction of every card. Mint still uses the older composite
+// because the reshoot did not cover it, and Black has no box front at all.
 const cardModules = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/images/cards/*.{jpg,jpeg,png}',
   { eager: true }
@@ -60,5 +80,5 @@ const cardModules = import.meta.glob<{ default: ImageMetadata }>(
 
 export function cardFor(slug: string): ImageMetadata | undefined {
   const path = Object.keys(cardModules).find((p) => p.endsWith(`/${slug}.jpg`));
-  return path ? cardModules[path].default : photosFor(slug)[0];
+  return path ? cardModules[path].default : photosFor(slug)[0]?.image;
 }
