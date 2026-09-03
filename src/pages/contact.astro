@@ -1,4 +1,5 @@
 ---
+import { STORE_EMAIL } from '../consts';
 import Layout from '../components/Layout.astro';
 import UtilityBar from '../components/UtilityBar.astro';
 import PrimaryNav from '../components/PrimaryNav.astro';
@@ -21,7 +22,7 @@ import Footer from '../components/Footer.astro';
           <div class="mt-12 flex flex-col gap-4">
             <div>
               <p class="text-[14px] font-medium text-ink">Email</p>
-              <a href="mailto:guardiansleeves@gmail.com" class="text-[16px] text-mute hover:text-ink transition-colors">guardiansleeves@gmail.com</a>
+              <a href={`mailto:${STORE_EMAIL}`} class="text-[16px] text-mute hover:text-ink transition-colors">{STORE_EMAIL}</a>
             </div>
           </div>
         </div>

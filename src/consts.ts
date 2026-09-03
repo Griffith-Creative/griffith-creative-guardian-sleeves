@@ -1,7 +1,7 @@
 // ─── Store inbox ───
 // Contact and wholesale forms compose an email to this address in the
-// visitor's mail app. Swap to the @guardiansleeves.com mailbox once it exists.
-export const STORE_EMAIL = 'guardiansleeves@gmail.com';
+// visitor's mail app. Zoho alias on Zachary's mailbox, live 2026-09-02.
+export const STORE_EMAIL = 'contact@guardiansleeves.com';
 
 // ─── Shopify Storefront API ───
 // The Storefront access token is PUBLIC by design (it ships in browser code).
