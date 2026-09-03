@@ -12,7 +12,12 @@ export default defineConfig({
   site: 'https://guardiansleeves.com',
   // Old Shopify storefront links: /pages/contact, /pages/about, etc.
   redirects: {
-    '/pages/[slug]': { status: 301, destination: '/[slug]' },
+    '/pages/contact': '/contact',
+    '/pages/about': '/about',
+    '/pages/wholesale': '/wholesale',
+    '/pages/find-us': '/find-us',
+    '/pages/about-us': '/about',
+    '/pages/contact-us': '/contact',
   },
 
   vite: {
