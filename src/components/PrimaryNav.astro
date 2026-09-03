@@ -17,7 +17,9 @@ const navLinks = [
 ---
 
 <nav class="sticky top-0 z-40 bg-canvas h-16 flex items-center" style="box-shadow: var(--elevation-inset);" aria-label="Primary navigation">
-  <div class="container-guardian flex items-center justify-between">
+  <!-- Three equal columns on desktop so the links center on the page, not between
+       the logo and the cart (which are different widths). -->
+  <div class="container-guardian flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
     <!-- Logo -->
     <a href="/" aria-label="Guardian Home" class="flex items-center gap-2.5 text-ink">
       <HeadMark aria-hidden="true" class="h-8 w-auto" />
@@ -25,7 +27,7 @@ const navLinks = [
     </a>
 
     <!-- Desktop Nav -->
-    <ul class="hidden md:flex items-center gap-8" role="list">
+    <ul class="hidden md:flex items-center gap-8 md:justify-self-center" role="list">
       {navLinks.map((link) => (
         <li>
           <a
@@ -43,7 +45,7 @@ const navLinks = [
     </ul>
 
     <!-- Right cluster -->
-    <div class="flex items-center gap-5">
+    <div class="flex items-center gap-5 md:justify-self-end">
       <!-- Search removed until a real search exists; 11 SKUs don't need one
            and a dead control invites clicks. Restore from git when wired. -->
 
