@@ -13,15 +13,18 @@ function money(amount, currency) {
 }
 
 const root = () => document.getElementById('cart-root');
+const OUTSIDE = 'main, footer, nav, a[href="#main-content"]';
+let lastTrigger = null;
 
 function openCart() {
   const r = root();
   if (!r) return;
+  lastTrigger = document.activeElement;
   r.classList.add('is-open');
   r.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
   // Keep Tab inside the drawer: everything outside it goes inert while open.
-  document.querySelectorAll('main, footer, nav').forEach((el) => el.setAttribute('inert', ''));
+  document.querySelectorAll(OUTSIDE).forEach((el) => el.setAttribute('inert', ''));
   document.getElementById('cart-close')?.focus();
 }
 
@@ -31,7 +34,10 @@ function closeCart() {
   r.classList.remove('is-open');
   r.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
-  document.querySelectorAll('main, footer, nav').forEach((el) => el.removeAttribute('inert'));
+  document.querySelectorAll(OUTSIDE).forEach((el) => el.removeAttribute('inert'));
+  // Put focus back where the visitor was, not on a hidden close button.
+  if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+  lastTrigger = null;
 }
 
 function lineHTML(line) {
