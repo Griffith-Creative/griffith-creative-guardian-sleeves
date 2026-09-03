@@ -10,6 +10,10 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://guardiansleeves.com',
+  // Old Shopify storefront links: /pages/contact, /pages/about, etc.
+  redirects: {
+    '/pages/[slug]': { status: 301, destination: '/[slug]' },
+  },
 
   vite: {
     plugins: [tailwindcss()]
