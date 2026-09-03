@@ -4,15 +4,17 @@ const messages = [
   'Wholesale pricing available',
 ];
 
-const track = messages.join(' · ') + ' · ';
+// Repeated so one span always exceeds the widest viewport; the marquee
+// scrolls by half the track, so a short span leaves bare green at the right.
+const track = (messages.join(' · ') + ' · ').repeat(4);
 ---
 
 <div class="bg-accent h-9 flex items-center overflow-hidden select-none" aria-hidden="true">
   <div class="utility-marquee-track flex whitespace-nowrap">
-    <span class="utility-marquee-content text-[11px] font-medium tracking-[0.08em] uppercase text-canvas/70 px-2">
+    <span class="utility-marquee-content text-[11px] font-medium tracking-[0.08em] uppercase text-canvas px-2">
       {track}
     </span>
-    <span class="utility-marquee-content text-[11px] font-medium tracking-[0.08em] uppercase text-canvas/70 px-2">
+    <span class="utility-marquee-content text-[11px] font-medium tracking-[0.08em] uppercase text-canvas px-2">
       {track}
     </span>
   </div>

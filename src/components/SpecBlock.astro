@@ -52,7 +52,9 @@ const oddCount = specs.length % 2 === 1;
       // a cell that starts a 2-up row has nothing to its left
       i > 0 && i % 2 === 0 && (isPanel ? 'before:hidden' : 'before:hidden md:before:block'),
       // inset horizontal divider between stacked rows
-      i >= 2 && "after:content-[''] after:absolute after:top-0 after:left-1/2 after:-translate-x-1/2 after:w-[56%] after:h-px after:bg-hairline",
+      i >= 2 && "after:content-[''] after:absolute after:top-0 after:left-1/2 after:-translate-x-1/2 after:h-px after:bg-hairline",
+      // the cell spanning both columns gets a single-cell-width rule, not a double one
+      i >= 2 && (oddCount && i === specs.length - 1 && isPanel ? 'after:w-[28%]' : 'after:w-[56%]'),
       i >= 2 && !isPanel && 'md:after:hidden',
     ]}>
       <svg

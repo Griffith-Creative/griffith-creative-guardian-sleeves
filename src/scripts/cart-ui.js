@@ -20,6 +20,8 @@ function openCart() {
   r.classList.add('is-open');
   r.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
+  // Keep Tab inside the drawer: everything outside it goes inert while open.
+  document.querySelectorAll('main, footer, nav').forEach((el) => el.setAttribute('inert', ''));
   document.getElementById('cart-close')?.focus();
 }
 
@@ -29,6 +31,7 @@ function closeCart() {
   r.classList.remove('is-open');
   r.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
+  document.querySelectorAll('main, footer, nav').forEach((el) => el.removeAttribute('inert'));
 }
 
 function lineHTML(line) {

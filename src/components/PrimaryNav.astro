@@ -33,7 +33,7 @@ const navLinks = [
           <a
             href={link.href}
             class:list={[
-              'text-[16px] font-medium leading-[1.5] text-ink pb-1 transition-colors',
+              'text-[16px] font-medium leading-[1.5] text-ink pb-1 transition-colors hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink',
               activeSection === link.href && 'border-b-2 border-accent',
             ]}
             aria-current={activeSection === link.href ? 'page' : undefined}

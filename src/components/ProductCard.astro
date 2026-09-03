@@ -15,7 +15,7 @@ const { name, subtitle, price, href, image, badge } = Astro.props;
 ---
 
 <article class="group">
-  <a href={href} class="block">
+  <a href={href} class="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
     <!-- Image -->
     <div class="relative aspect-square bg-soft-cloud overflow-hidden">
       {image ? (

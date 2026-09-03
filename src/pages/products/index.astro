@@ -18,7 +18,7 @@ import { COLORWAYS, cardFor } from '../../data/products';
         <p class="text-[16px] text-mute mt-4">Standard size. Matte finish. Eleven colors, one job done right.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--space-sm)]" data-animate="fade-up">
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-[var(--space-sm)]" data-animate="fade-up">
         {COLORWAYS.map((colorway) => (
           <ProductCard
             name={colorway.name}
@@ -33,7 +33,7 @@ import { COLORWAYS, cardFor } from '../../data/products';
         <a href="/#newsletter" class="group flex flex-col">
           <div class="aspect-square bg-ink flex flex-col items-center justify-center text-center px-8">
             <span class="font-display text-[32px] leading-[0.9] uppercase text-canvas">More on the way</span>
-            <span class="mt-4 inline-block bg-canvas text-ink font-medium text-[14px] px-5 py-2.5 rounded-full group-hover:bg-soft-cloud transition-colors">Get drops first</span>
+            <span class="mt-4 inline-block bg-accent text-canvas font-medium text-[14px] px-5 py-2.5 rounded-full group-hover:bg-accent-hover transition-colors">Get drops first</span>
           </div>
           <div class="mt-2 flex flex-col gap-1">
             <span class="text-[16px] font-medium leading-[1.5] text-ink">New colorways in production</span>

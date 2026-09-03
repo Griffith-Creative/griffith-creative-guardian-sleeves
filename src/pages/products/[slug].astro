@@ -76,7 +76,7 @@ const metaDescription = colorway.live
                   data-gallery-thumb={i}
                   aria-label={`View ${photo.label} photo`}
                   aria-pressed={i === 0}
-                  class="aspect-square overflow-hidden border transition-colors data-[active]:border-ink border-transparent hover:border-hairline"
+                  class="aspect-square overflow-hidden bg-soft-cloud border transition-colors data-[active]:border-ink border-transparent hover:border-hairline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
                   data-active={i === 0 ? '' : undefined}
                 >
                   <Image
@@ -86,7 +86,7 @@ const metaDescription = colorway.live
                     sizes="120px"
                     format="avif"
                     quality={70}
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-contain p-1.5"
                     loading="lazy"
                     decoding="async"
                   />
