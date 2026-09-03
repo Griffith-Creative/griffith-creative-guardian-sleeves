@@ -1,13 +1,14 @@
-// ─── Form submission endpoint (Formspree) ───
-// Public by design. Create a form at https://formspree.io targeting the
-// store inbox (e.g. hello@guardiansleeves.com) and paste its endpoint below.
-export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/REPLACE_ME';
+// ─── Store inbox ───
+// Contact and wholesale forms compose an email to this address in the
+// visitor's mail app. Swap to the @guardiansleeves.com mailbox once it exists.
+export const STORE_EMAIL = 'guardiansleeves@gmail.com';
 
 // ─── Shopify Storefront API ───
 // The Storefront access token is PUBLIC by design (it ships in browser code).
 // Generate it in Shopify admin: Settings → Apps → Develop apps → your app →
 // Storefront API → Install → copy the "Storefront API access token".
-export const SHOPIFY_DOMAIN = 'guardiansleeves.com';
+// Always the myshopify host: guardiansleeves.com points at this site, not Shopify.
+export const SHOPIFY_DOMAIN = 'yqu4fd-pn.myshopify.com';
 export const SHOPIFY_API_VERSION = '2026-01';
 export const SHOPIFY_STOREFRONT_TOKEN = 'b8367d54e68f8ad30ad0e816b09187dc';
 

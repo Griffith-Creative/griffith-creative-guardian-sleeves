@@ -1,9 +1,9 @@
 ---
-import { FORMSPREE_ENDPOINT } from '../consts';
+import { STORE_EMAIL } from '../consts';
 ---
 
-<!-- AJAX submit to Formspree - stays on the branded site, shows real success/error. -->
-<form id="contact-form" class="flex flex-col gap-6" data-endpoint={FORMSPREE_ENDPOINT} novalidate>
+<!-- Composes an email in the visitor's mail app; no third-party form service. -->
+<form id="contact-form" class="flex flex-col gap-6" data-mode="mailto" data-mailto={STORE_EMAIL} data-subject="Website message | Guardian Sleeves" novalidate>
   <div class="flex flex-col gap-2">
     <label for="contact-name" class="text-[14px] font-medium leading-[1.5] text-ink">Name</label>
     <input
