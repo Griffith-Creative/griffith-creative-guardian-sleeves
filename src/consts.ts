@@ -32,5 +32,6 @@ export const JUDGEME_PUBLIC_TOKEN = 'TC9lw-hYGyA2tsFws7Gp8OYM2qc';
 // Hosted review form for the product, opened by "Write a review".
 // Judge.me admin: Settings → Request reviews → Links, QR codes and point of
 // sale review collection → the link for "Guardian Sleeves".
-// The build stops while this is empty so the button can never ship dead.
-export const JUDGEME_REVIEW_URL = '';
+// The build stops if this is empty so the button can never ship dead.
+export const JUDGEME_REVIEW_URL =
+  'https://judge.me/product_reviews/89e682b1-c4f3-453a-bf7b-ffc996141ad4/new?id=10137212158247&source=shareable-link';
