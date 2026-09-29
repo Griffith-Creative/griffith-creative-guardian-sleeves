@@ -1,0 +1,231 @@
+---
+// Customer reviews section for the PDP. Judge.me stores the reviews; this
+// renders them. The list is baked at build and refreshed in the browser by
+// scripts/reviews.js, which also drives "Show more".
+// Both states (no reviews / has reviews) are always in the DOM and swapped
+// with [hidden], so the live refresh can move between them without a rebuild.
+// Figma: "Guardian Sleeves" file, Product page, approved by Jacob 2026-09-29.
+import Stars from './Stars.astro';
+import ReviewItem from './ReviewItem.astro';
+import { JUDGEME_REVIEW_URL } from '../consts';
+import { STAR_PATH, barWidth, countLabel } from '../lib/reviews.js';
+
+interface Props {
+  // Result of getReviewsOnce(); null when Judge.me could not be reached at build.
+  data: {
+    average: number;
+    count: number;
+    histogram: { star: number; count: number }[];
+    reviews: any[];
+    totalPages: number;
+  } | null;
+}
+
+if (!JUDGEME_REVIEW_URL.startsWith('https://judge.me/')) {
+  throw new Error(
+    'JUDGEME_REVIEW_URL in src/consts.ts is empty or not a judge.me link. ' +
+      'The "Write a review" button has nowhere to go, so the build stops here.',
+  );
+}
+
+const { data } = Astro.props;
+const count = data?.count ?? 0;
+const average = data?.average ?? 0;
+const histogram = data?.histogram ?? [5, 4, 3, 2, 1].map((star) => ({ star, count: 0 }));
+const reviews = data?.reviews ?? [];
+const has = count > 0;
+const more = has && (data?.totalPages ?? 0) > 1;
+
+const label = 'text-[11px] font-medium leading-[1.5] uppercase tracking-[0.18em] text-mute';
+const writeButton =
+  'gs-focus inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-ink hover:bg-charcoal text-canvas font-medium text-[14px] leading-[1.5] px-6 py-3 rounded-full transition-colors';
+---
+
+<section
+  id="reviews"
+  class="scroll-mt-8"
+  aria-labelledby="reviews-heading"
+  data-reviews
+  data-total={count}
+  data-total-pages={data?.totalPages ?? 0}
+>
+  {/* Clip shape for the outlined (empty) stars everywhere on this page. */}
+  <svg class="absolute w-0 h-0" aria-hidden="true" focusable="false">
+    <defs>
+      <clipPath id="gs-star-clip"><path d={STAR_PATH}></path></clipPath>
+    </defs>
+  </svg>
+
+  <div class="container-guardian">
+    <div
+      class:list={[
+        'border-t border-hairline py-[var(--space-section)] grid grid-cols-1 lg:grid-cols-2 lg:gap-16',
+        has ? 'gap-8' : 'gap-5',
+      ]}
+      data-reviews-grid
+    >
+      <!-- Summary -->
+      <div class="flex flex-col gap-6 md:gap-8 lg:sticky lg:top-8 lg:self-start">
+        <h2 id="reviews-heading" class="gs-trim font-display text-[32px] md:text-[48px] leading-[0.9] uppercase text-ink">Reviews</h2>
+
+        <div class="flex flex-col gap-6 md:gap-8" hidden={!has} data-reviews-filled>
+          <div class="flex items-end gap-4">
+            <span class="gs-trim font-display text-[72px] md:text-[96px] leading-[0.9] text-ink" data-reviews-average>{average.toFixed(1)}</span>
+            <div class="flex flex-col gap-2.5">
+              <Stars rating={average} size="lg" />
+              <span class:list={['gs-trim', label]} data-reviews-count>{countLabel(count)}</span>
+            </div>
+          </div>
+
+          <ul class="flex flex-col gap-2.5 -my-[5px]" role="list" aria-label="Rating breakdown">
+            {histogram.map((row) => (
+              <li class="grid grid-cols-[30px_1fr_28px] items-center gap-3" data-reviews-bar={row.star}>
+                <span class="sr-only" data-reviews-bar-text>{row.star} stars: {countLabel(row.count)}</span>
+                <span class="flex items-center gap-1 text-[14px] font-medium leading-[1.5] text-ink" aria-hidden="true">
+                  {row.star}
+                  <svg class="w-3 h-3 fill-ink" viewBox="0 0 24 24" focusable="false"><path d={STAR_PATH}></path></svg>
+                </span>
+                <span class="block h-1 rounded-full bg-hairline-soft overflow-hidden" aria-hidden="true">
+                  <span class="block h-full rounded-full bg-ink" style={`width:${barWidth(row.count, histogram)}%`} data-reviews-bar-value></span>
+                </span>
+                <span class="text-[14px] leading-[1.5] text-mute text-right tabular-nums" aria-hidden="true" data-reviews-bar-count>{row.count}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div>
+            <a href={JUDGEME_REVIEW_URL} target="_blank" rel="noopener" class={writeButton}>
+              Write a review
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M7 17 17 7"></path><path d="M8 7h9v9"></path>
+              </svg>
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- List, or the empty state -->
+      <div>
+        <div class="flex flex-col items-start gap-5" hidden={has} data-reviews-empty>
+          <p class="text-[16px] leading-[1.5] text-mute lg:-mt-1">No reviews yet</p>
+          <a href={JUDGEME_REVIEW_URL} target="_blank" rel="noopener" class={writeButton}>
+            Write a review
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M7 17 17 7"></path><path d="M8 7h9v9"></path>
+            </svg>
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+        </div>
+
+        <div hidden={!has} data-reviews-filled>
+          <ul role="list" data-reviews-list>
+            {reviews.map((review) => <ReviewItem review={review} />)}
+          </ul>
+
+          <div
+            class="border-t border-hairline-soft pt-8 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between"
+            hidden={!more}
+            data-reviews-more-row
+          >
+            <button
+              type="button"
+              class="gs-focus inline-flex items-center justify-center w-full sm:w-auto min-w-[124px] h-[45px] border border-mute hover:border-ink hover:bg-soft-cloud text-ink font-medium text-[14px] leading-[1.5] px-6 rounded-full transition-colors disabled:cursor-not-allowed"
+              data-reviews-more
+            >
+              <span data-reviews-more-label>Show more</span>
+              <svg class="gs-spin w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true" focusable="false" hidden data-reviews-more-spinner>
+                <path d="M21 12a9 9 0 1 1-6.2-8.56"></path>
+              </svg>
+            </button>
+            <span class:list={['self-end sm:self-auto -mr-[0.18em]', label]} aria-live="polite" data-reviews-shown>{reviews.length} of {count}</span>
+          </div>
+          <p data-reviews-status role="status" aria-live="polite" class="hidden mt-3 text-[14px] font-medium leading-[1.5]"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <template data-review-template><ReviewItem /></template>
+</section>
+
+<!-- Global on purpose: scripts/reviews.js clones and creates review markup at
+     runtime, and Astro's scoped styles never reach elements made in JS. -->
+<style is:global>
+  .gs-stars {
+    display: inline-flex;
+    gap: 3px;
+    flex: none;
+  }
+  .gs-stars--lg {
+    gap: 4px;
+  }
+  .gs-star {
+    position: relative;
+    display: block;
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+  .gs-stars--lg .gs-star {
+    width: 20px;
+    height: 20px;
+  }
+  .gs-star svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+  }
+  .gs-stars--lg .gs-star svg {
+    width: 20px;
+    height: 20px;
+  }
+  /* 1.5px outline drawn inside the shape: the stroke is doubled and clipped to the star. */
+  .gs-star-empty path {
+    fill: none;
+    stroke: var(--mute);
+    stroke-width: 4.5;
+    stroke-linejoin: round;
+  }
+  .gs-stars--lg .gs-star-empty path {
+    stroke-width: 3.6;
+  }
+  .gs-star-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    overflow: hidden;
+    background: var(--canvas);
+  }
+  .gs-star-fill path {
+    fill: var(--ink);
+  }
+
+  /* One focus treatment: 2px canvas gap, then 2px ink ring. Never changes size. */
+  .gs-focus:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--canvas), 0 0 0 4px var(--ink);
+  }
+
+  /* Bebas sits on its cap height so the score, its stars and the first review line up. */
+  @supports (text-box: trim-both cap alphabetic) {
+    .gs-trim {
+      text-box: trim-both cap alphabetic;
+    }
+  }
+
+  .gs-spin {
+    animation: gs-spin 800ms linear infinite;
+  }
+  .gs-spin[hidden] {
+    display: none;
+  }
+  @keyframes gs-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<script>
+  import '../scripts/reviews.js';
+</script>

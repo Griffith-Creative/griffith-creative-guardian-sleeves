@@ -1,0 +1,36 @@
+---
+// Star rating, drawn to the nearest half. Filled stars are ink; empty stars are
+// a mute outline (a pale fill measured 1.64:1 on white and failed contrast).
+// Needs the #gs-star-clip definition that Reviews.astro puts on the page.
+// scripts/reviews.js updates these in place: it sets each .gs-star-fill width
+// and the aria-label, so keep the class names in step with that file.
+import { starFill, starsLabel, STAR_PATH } from '../lib/reviews.js';
+
+interface Props {
+  rating: number;
+  size?: 'sm' | 'lg';
+  class?: string;
+}
+
+const { rating, size = 'sm', class: className } = Astro.props;
+---
+
+<span
+  class:list={['gs-stars', size === 'lg' && 'gs-stars--lg', className]}
+  role="img"
+  aria-label={starsLabel(rating)}
+  data-stars
+>
+  {[1, 2, 3, 4, 5].map((position) => (
+    <span class="gs-star">
+      <svg class="gs-star-empty" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d={STAR_PATH} clip-path="url(#gs-star-clip)" />
+      </svg>
+      <span class="gs-star-fill" style={`width:${starFill(rating, position)}%`}>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d={STAR_PATH} />
+        </svg>
+      </span>
+    </span>
+  ))}
+</span>

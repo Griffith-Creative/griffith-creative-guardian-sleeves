@@ -4,9 +4,12 @@ import UtilityBar from '../../components/UtilityBar.astro';
 import PrimaryNav from '../../components/PrimaryNav.astro';
 import SpecBlock from '../../components/SpecBlock.astro';
 import Footer from '../../components/Footer.astro';
+import Reviews from '../../components/Reviews.astro';
+import Stars from '../../components/Stars.astro';
 import { Image } from 'astro:assets';
 import { COLORWAYS, photosFor, PRODUCT_HANDLE } from '../../data/products';
 import { productSpecs, specSentence } from '../../data/specs';
+import { getReviewsOnce, countLabel } from '../../lib/reviews.js';
 
 export function getStaticPaths() {
   return COLORWAYS.map((colorway) => ({
@@ -19,6 +22,11 @@ const { colorway } = Astro.props;
 const photos = photosFor(colorway.slug);
 
 const fallbackPrice = colorway.live ? `$${colorway.price}` : 'Coming Soon';
+
+// Reviews baked at build (null if Judge.me could not be reached; the page then
+// ships the empty state and scripts/reviews.js fills it in on the first visit).
+const reviews = await getReviewsOnce();
+const hasReviews = (reviews?.count ?? 0) > 0;
 
 const jsonLd: Record<string, unknown> = {
   '@context': 'https://schema.org',
@@ -35,6 +43,23 @@ if (colorway.live) {
     availability: 'https://schema.org/InStock',
     url: `https://guardiansleeves.com/products/${colorway.slug}`,
   };
+}
+
+// Rating data for search results. Only sent once a real review exists.
+if (reviews && hasReviews) {
+  jsonLd.aggregateRating = {
+    '@type': 'AggregateRating',
+    ratingValue: reviews.average.toFixed(1),
+    reviewCount: reviews.count,
+  };
+  jsonLd.review = reviews.reviews.map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.author },
+    datePublished: r.date.slice(0, 10),
+    reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+    ...(r.title && { name: r.title }),
+    ...(r.body && { reviewBody: r.body }),
+  }));
 }
 
 const metaDescription = colorway.live
@@ -99,6 +124,13 @@ const metaDescription = colorway.live
         <!-- Product Info -->
         <div data-animate="fade-up">
           <h1 class="font-display text-[48px] md:text-[64px] leading-[0.9] uppercase text-ink">{colorway.name}</h1>
+          <!-- Rating line: hidden until the first review. scripts/reviews.js keeps it current. -->
+          <div class="mt-3 flex items-center gap-2" hidden={!hasReviews} data-rating-line>
+            <Stars rating={reviews?.average ?? 0} />
+            <span class="text-[14px] font-medium leading-[1.5] text-ink" data-rating-average>{(reviews?.average ?? 0).toFixed(1)}</span>
+            <!-- The ::after grows the tap area to 45px tall; the link and its focus ring stay text-sized. -->
+            <a href="#reviews" class="gs-focus relative after:content-[''] after:absolute after:inset-x-0 after:-inset-y-3 text-[14px] leading-[1.5] text-mute hover:text-ink underline underline-offset-2 rounded-[4px] transition-colors" data-rating-count>{countLabel(reviews?.count ?? 0)}</a>
+          </div>
           <p id="pdp-price" class="text-[24px] font-medium leading-[1.2] text-ink mt-4">{fallbackPrice}</p>
 
           <!-- Color selector — visible swatch row. Color IS the product, so all
@@ -211,6 +243,8 @@ const metaDescription = colorway.live
       </div>
     </div>
   </section>
+
+  <Reviews data={reviews} />
 
   <Footer slot="footer" />
 </Layout>

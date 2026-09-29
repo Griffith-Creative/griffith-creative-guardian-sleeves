@@ -1,0 +1,107 @@
+---
+// One review. Rendered at build for the baked list, and once more with no
+// review inside a <template> that scripts/reviews.js clones for live data.
+// The data-review-* hooks are that script's contract; keep them in step.
+// Figma: "Guardian Sleeves" file, Product page, approved by Jacob 2026-09-29.
+import Stars from './Stars.astro';
+import { formatDate, splitEmails } from '../lib/reviews.js';
+
+interface Review {
+  id: string;
+  rating: number;
+  title: string;
+  body: string;
+  author: string;
+  date: string;
+  verified: boolean;
+  photos: { thumb: string; full: string }[];
+  reply: string;
+}
+
+interface Props {
+  review?: Review;
+}
+
+const { review } = Astro.props;
+const label = 'text-[11px] font-medium uppercase tracking-[0.18em] text-mute';
+---
+
+<li
+  class:list={[
+    'border-t border-hairline-soft pt-8 lg:first:border-t-0 lg:first:pt-0',
+    review?.reply ? 'pb-10' : 'pb-8',
+  ]}
+  data-review={review?.id ?? ''}
+>
+  <div class="flex items-center justify-between gap-4">
+    <Stars rating={review?.rating ?? 0} />
+    <time class:list={[label, 'leading-[1.5] -mr-[0.18em]']} datetime={review?.date ?? ''} data-review-date>{review ? formatDate(review.date) : ''}</time>
+  </div>
+
+  <h3
+    class="mt-4 text-[16px] font-medium leading-[1.5] text-ink break-words lg:max-w-[560px]"
+    hidden={!review?.title}
+    data-review-title
+  >{review?.title ?? ''}</h3>
+  <p
+    class:list={['text-[15px] leading-[1.6] text-ash break-words whitespace-pre-line lg:max-w-[560px]', review?.title ? 'mt-2' : 'mt-4']}
+    hidden={!review?.body}
+    data-review-body
+  >{review?.body ?? ''}</p>
+
+  <ul class="mt-4 flex flex-wrap gap-2" role="list" hidden={!review?.photos.length} data-review-photos>
+    {(review?.photos ?? []).map((photo, i) => (
+      <li>
+        <a
+          href={photo.full}
+          target="_blank"
+          rel="noopener"
+          class="gs-focus block w-[72px] h-[72px] bg-soft-cloud"
+        >
+          <img
+            src={photo.thumb}
+            alt={`Customer photo ${i + 1} from ${review?.author}`}
+            width="72"
+            height="72"
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full object-cover"
+          />
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1">
+    <span class="text-[14px] font-medium leading-[1.5] text-ink break-words" data-review-author>{review?.author ?? ''}</span>
+    <span class="inline-flex items-center gap-1.5" hidden={!review?.verified} data-review-verified>
+      <svg
+        class="w-3.5 h-3.5 text-ink"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="3.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="m8.5 12.5 2.5 2.5 4.5-5"></path>
+      </svg>
+      {/* 1px down: small caps centered on a line box ride high next to mixed-case text. */}
+      <span class:list={[label, 'leading-none translate-y-px']}>Verified buyer</span>
+    </span>
+  </div>
+
+  <div
+    class="mt-6 rounded-[14px] border border-hairline bg-canvas px-[19px] py-[15px] lg:max-w-[560px]"
+    hidden={!review?.reply}
+    data-review-reply
+  >
+    <p class="text-[14px] font-medium leading-[1.5] text-ink">Guardian Sleeves replied</p>
+    {/* One line: whitespace-pre-line would render template indentation as blank lines. */}
+    <p class="mt-1 text-[15px] leading-[1.6] text-ash break-words whitespace-pre-line" data-review-reply-body>{splitEmails(review?.reply ?? '').map((part) => part.email ? <a href={`mailto:${part.text}`} class="gs-focus text-ink underline underline-offset-2 rounded-[4px]">{part.text}</a> : part.text)}</p>
+  </div>
+</li>
